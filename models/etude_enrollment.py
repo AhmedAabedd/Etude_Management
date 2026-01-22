@@ -1,5 +1,5 @@
 from odoo import models, fields, api, _
-from odoo.exceptions import UserError, ValidationError
+from odoo.exceptions import UserError, ValidationError, RedirectWarning
 
 
 
@@ -47,9 +47,16 @@ class EtudeEnrollment(models.Model):
         for rec in self:
             #Set state to ACTIVE
             if rec.sessions_remaining > 0 and rec.state == 'expired':
-                active_enrollment = rec.get_other_active_enrollment()
-                if active_enrollment:
-                    raise UserError("Student already has an active enrollment to this group !")
+                other_active = rec.get_other_active_enrollment()
+                if other_active:
+                    #raise UserError("Student already has an active enrollment to this group !")
+                    action = self.env.ref('etude_management.action_enrollment_form_only').read()[0]
+                    action['res_id'] = other_active.id
+                    raise RedirectWarning(
+                        f"Student already has active enrollment: {other_active.name}",
+                        action,
+                        f"View Enrollment",
+                    )
                 else:
                     rec.state = 'active'
                     rec.add_student_to_group()
@@ -61,22 +68,35 @@ class EtudeEnrollment(models.Model):
     
     def action_draft(self):
         for rec in self:
+            if rec.state == 'active':
+                rec.remove_student_from_group()
             rec.state = 'draft'
-            rec.remove_student_from_group()
 
     def action_active(self):
         for rec in self:
-            active_enrollment = rec.get_other_active_enrollment()
-            if active_enrollment:
-                raise UserError("Student already has an active enrollment to this group !")
+            other_active = rec.get_other_active_enrollment()
+            if other_active:
+                #Raise Warning if other active nerollment exist
+                action = self.env.ref('etude_management.action_enrollment_form_only').read()[0]
+                action['res_id'] = other_active.id
+                raise RedirectWarning(
+                    f"Student already has active enrollment: {other_active.name}",
+                    action,
+                    f"View Enrollment",
+                )
+            
             else:
-                rec.state = 'active'
-                rec.add_student_to_group()
+                if rec.sessions_remaining > 0:
+                    rec.state = 'active'
+                    rec.add_student_to_group()
+                else:
+                    raise ValidationError("Cannot activate enrollment with 0 remaining sessions !")
     
     def action_expired(self):
         for rec in self:
+            if rec.state == 'active':
+                rec.remove_student_from_group()
             rec.state = 'expired'
-            rec.remove_student_from_group()
 
     @api.depends("sessions_attended", "sessions_number")
     def _compute_sessions_remaining(self):
@@ -92,12 +112,13 @@ class EtudeEnrollment(models.Model):
     
     def get_other_active_enrollment(self):
         self.ensure_one()
-        return self.env['etude.enrollment'].search([
-            ('student_id', '=', self.student_id.id),
-            ('group_id', '=', self.group_id.id),
-            ('state', '=', 'active'),
-            ('id', '!=', self.id)
-        ], limit=1)
+        other_active = self.student_id.enrollment_ids.filtered(
+            lambda e: e.group_id == self.group_id
+                    and e.state == 'active'
+                    and e.id != self.id
+        )
+
+        return other_active[:1]  # Return first or empty recordset
     
     def add_student_to_group(self):
         for rec in self:
@@ -112,9 +133,11 @@ class EtudeEnrollment(models.Model):
         for rec in self:
             if rec.group_id and rec.student_id:
                 if rec.student_id in rec.group_id.student_ids:
-                    rec.group_id.write({
-                        'student_ids': [(3, rec.student_id.id)]
-                    })
+                    other_active = rec.get_other_active_enrollment()
+                    if not other_active:
+                        rec.group_id.write({
+                            'student_ids': [(3, rec.student_id.id)]
+                        })
                     #rec.group_id.student_ids -= rec.student_id
 
     

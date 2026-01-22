@@ -26,6 +26,9 @@ class EtudeStudent(models.Model):
     enrollment_ids = fields.One2many('etude.enrollment', 'student_id')
     enrollment_count = fields.Integer(string="Enrollments Count", compute="_compute_enrollment_count", store=True)
 
+    attendance_ids = fields.One2many('etude.attendance', 'student_id')
+    attendance_count = fields.Integer(string="Attendances Count", compute="_compute_attendance_count", store=True)
+
 
     @api.depends("group_ids")
     def _compute_group_count(self):
@@ -36,6 +39,11 @@ class EtudeStudent(models.Model):
     def _compute_enrollment_count(self):
         for rec in self:
             rec.enrollment_count = len(rec.enrollment_ids)
+    
+    @api.depends("attendance_ids")
+    def _compute_attendance_count(self):
+        for rec in self:
+            rec.attendance_count = len(rec.attendance_ids.filtered(lambda a: a.status == True))
     
     def action_view_group(self):
         self.ensure_one()
@@ -63,6 +71,20 @@ class EtudeStudent(models.Model):
             'context': {
                 'default_student_id': self.id,
             }
+        }
+    
+    def action_view_session(self):
+        self.ensure_one()
+        attendance_present = self.attendance_ids.filtered(lambda a: a.status == True)
+        session_ids = attendance_present.mapped('session_id').ids
+
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'View Attended Sessions',
+            'res_model': 'etude.session',
+            'view_mode': 'list,form',
+            'target': 'current',
+            'domain': [('id', 'in', session_ids)],
         }
 
 

@@ -29,6 +29,9 @@
                         <button class="oe_stat_button" type="object" name="action_view_enrollment" icon="fa-graduation-cap">
                             <field name="enrollment_count" string="Enrollments" widget="statinfo"/>
                         </button>
+                        <button class="oe_stat_button" type="object" name="action_view_session" icon="fa-calendar-check-o">
+                            <field name="attendance_count" string="Attended Sessions" widget="statinfo"/>
+                        </button>
                     </div>
                     <div class="oe_title">
                         <h1>

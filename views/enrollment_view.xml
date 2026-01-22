@@ -27,9 +27,9 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button string="Set To Draft" type="object" name="action_draft"/>
+                    <button string="Set To Draft" type="object" name="action_draft" invisible="state == 'draft'"/>
                     <button string="Activate" type="object" name="action_active" class="btn-primary" invisible="state != 'draft'"/>
-                    <button string="Expired" type="object" name="action_expired"/>
+                    <button string="Set To Expired" type="object" name="action_expired" invisible="state != 'active'"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft, active, expired" clickable="1"/>
                 </header>
                 <sheet>
@@ -96,6 +96,15 @@
                 Create a new enrollment !  
             </p>
         </field>
+    </record>
+
+    <!-- data/enrollment_actions.xml -->
+    <record id="action_enrollment_form_only" model="ir.actions.act_window">
+        <field name="name">Active Enrollment</field>
+        <field name="res_model">etude.enrollment</field>
+        <field name="view_id" ref="view_enrollment_form"/>
+        <field name="target">new</field>
+        <field name="context">{'create': False}</field>
     </record>
 
 </odoo>
