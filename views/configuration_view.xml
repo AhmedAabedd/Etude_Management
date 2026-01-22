@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--Subject-->
+    <record id="view_subject_tree" model="ir.ui.view">
+        <field name="name">etude.subject.tree</field>
+        <field name="model">etude.subject</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="monthly_fee"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_subject_form" model="ir.ui.view">
+        <field name="name">etude.subject.form</field>
+        <field name="model">etude.subject</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" type="object" name="action_view_group" icon="fa-users">
+                            <field name="group_count" string="Groups" widget="statinfo"/>
+                        </button>
+                    </div>
+                    <group>
+                        <div class="oe_title">
+                            <h1>
+                                <label for="name">Name</label>
+                                <field name="name" placeholder="e.g. Algorithme"/>
+                            </h1>
+                        </div>
+                    </group>
+                    <group>
+                        <field name="monthly_fee"/>
+                    </group>
+                    <notebook>
+                        <page name="description" string="Description">
+                            <field name="description" placeholder="Add a description here..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_etude_subject" model="ir.actions.act_window">
+        <field name="name">Subjects</field>
+        <field name="res_model">etude.subject</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new subject !  
+            </p>
+        </field>
+    </record>
+
+    <!--City-->
+    <record id="view_city_tree" model="ir.ui.view">
+        <field name="name">etude.city.tree</field>
+        <field name="model">etude.city</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="student_count"/>
+                <field name="lycee_count"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_city_form" model="ir.ui.view">
+        <field name="name">etude.city.form</field>
+        <field name="model">etude.city</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" type="object" name="action_view_student" icon="fa-user">
+                            <field name="student_count" string="Students" widget="statinfo"/>
+                        </button>
+                        <button class="oe_stat_button" type="object" name="action_view_lycee" icon="fa-university">
+                            <field name="lycee_count" string="Lycées" widget="statinfo"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <label for="name">Name</label>
+                            <field name="name" placeholder="e.g. Borj Cédria"/>
+                        </h1>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_etude_city" model="ir.actions.act_window">
+        <field name="name">Citys</field>
+        <field name="res_model">etude.city</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new city !  
+            </p>
+        </field>
+    </record>
+
+    <!--Lycée-->
+    <record id="view_lycee_tree" model="ir.ui.view">
+        <field name="name">etude.lycee.tree</field>
+        <field name="model">etude.lycee</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="city_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_lycee_form" model="ir.ui.view">
+        <field name="name">etude.lycee.form</field>
+        <field name="model">etude.lycee</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" type="object" name="action_view_student" icon="fa-user">
+                            <field name="student_count" string="Students" widget="statinfo"/>
+                        </button>
+                    </div>
+                    <group>
+                        <div class="oe_title">
+                            <h1>
+                                <label for="name">Name</label>
+                                <field name="name" placeholder="e.g. Borj Cédria"/>
+                            </h1>
+                        </div>
+                    </group>
+                    <group>
+                        <field name="city_id"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_etude_lycee" model="ir.actions.act_window">
+        <field name="name">Lycées</field>
+        <field name="res_model">etude.lycee</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new lycée !  
+            </p>
+        </field>
+    </record>
+
+    <!--Level-->
+    <record id="view_level_tree" model="ir.ui.view">
+        <field name="name">etude.level.tree</field>
+        <field name="model">etude.level</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="student_count"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_level_form" model="ir.ui.view">
+        <field name="name">etude.level.form</field>
+        <field name="model">etude.level</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" type="object" name="action_view_student" icon="fa-user">
+                            <field name="student_count" string="Students" widget="statinfo"/>
+                        </button>
+                        <button class="oe_stat_button" type="object" name="action_view_group" icon="fa-users">
+                            <field name="group_count" string="Groups" widget="statinfo"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <label for="name">Name</label>
+                            <field name="name" placeholder="e.g. 3éme année"/>
+                        </h1>
+                    </div>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_etude_level" model="ir.actions.act_window">
+        <field name="name">Level</field>
+        <field name="res_model">etude.level</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new Level !  
+            </p>
+        </field>
+    </record>
+
+</odoo>

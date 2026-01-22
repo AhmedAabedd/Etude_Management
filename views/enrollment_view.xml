@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--TREE-->
+    <record id="view_enrollment_tree" model="ir.ui.view">
+        <field name="name">etude.enrollment.tree</field>
+        <field name="model">etude.enrollment</field>
+        <field name="arch" type="xml">
+            <list decoration-success="state == 'active'"
+                  decoration-danger="state == 'expired'">
+                <field name="name"/>
+                <field name="student_id"/>
+                <field name="subject_id"/>
+                <field name="group_id"/>
+                <field name="state" widget="badge"
+                                    decoration-muted="state == 'draft'"
+                                    decoration-success="state == 'active'"
+                                    decoration-danger="state == 'expired'"/>
+            </list>
+        </field>
+    </record>
+
+    <!--FORM-->
+    <record id="view_enrollment_form" model="ir.ui.view">
+        <field name="name">etude.enrollment.form</field>
+        <field name="model">etude.enrollment</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button string="Draft" type="object" name="action_draft"/>
+                    <button string="Active" type="object" name="action_active"/>
+                    <button string="Expired" type="object" name="action_expired"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft, active, expired" clickable="1"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <notebook>
+                        <page name="general_info" string="General Information">
+                            <group>
+                                <group string="General Info">
+                                    <field name="student_id"/>
+                                    <field name="subject_id"/>
+                                    <field name="group_id"/>
+                                    <field name="start_date"/>
+                                </group>
+                                <group string="Sessions">
+                                    <field name="sessions_number"/>
+                                    <field name="sessions_attended"/>
+                                    <field name="sessions_remaining"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page name="notes" string="Notes">
+                            <field name="note" placeholder="You can add notes to this enrollmet here ..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!--ACTION-->
+    <record id="action_etude_enrollment" model="ir.actions.act_window">
+        <field name="name">Enrollments</field>
+        <field name="res_model">etude.enrollment</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new enrollment !  
+            </p>
+        </field>
+    </record>
+
+    <!--ACTION FOR ACTIVE-->
+    <record id="action_etude_enrollment_active" model="ir.actions.act_window">
+        <field name="name">Active Enrollments</field>
+        <field name="res_model">etude.enrollment</field>
+        <field name="domain">[('state', '=', 'active')]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new enrollment !  
+            </p>
+        </field>
+    </record>
+
+    <!--ACTION FOR EXPIRED-->
+    <record id="action_etude_enrollment_expired" model="ir.actions.act_window">
+        <field name="name">Expired Enrollments</field>
+        <field name="res_model">etude.enrollment</field>
+        <field name="domain">[('state', '=', 'expired')]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new enrollment !  
+            </p>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- TREE VIEW -->
+    <record id="view_group_tree" model="ir.ui.view">
+        <field name="name">etude.group.tree</field>
+        <field name="model">etude.group</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="subject_id"/>
+                <field name="student_count"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- FORM VIEW -->
+    <record id="view_group_form" model="ir.ui.view">
+        <field name="name">etude.group.form</field>
+        <field name="model">etude.group</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" type="object" name="action_view_session" icon="fa-calendar-check-o">
+                            <field name="session_count" string="Sessions" widget="statinfo"/>
+                        </button>
+                    </div>
+                    <group>
+                        <div class="oe_title">
+                            <h1>
+                                <label for="name">Name</label>
+                                <field name="name" placeholder="e.g. Algo Group 1"/>
+                            </h1>
+                        </div>
+                    </group>
+                    <group>
+                        <field name="level_id"/>
+                        <field name="subject_id"/>
+                        <field name="student_count"/>
+                    </group>
+                    <notebook>
+                        <page name="students_list" string="Students">
+                            <field name="student_ids">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="phone"/>
+                                    <field name="level_id"/>
+                                    <field name="lycee_id"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page name="notes" string="Notes">
+                            <field name="note" placeholder="You can add notes about this group here ..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!--ACTION-->
+    <record id="action_etude_group" model="ir.actions.act_window">
+        <field name="name">Groups</field>
+        <field name="res_model">etude.group</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new group !  
+            </p>
+        </field>
+    </record>
+
+</odoo>

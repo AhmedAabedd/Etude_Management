@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+<!--ETUDE-->
+    <menuitem id="menu_etude_root" 
+            name="Etude"
+            sequence="10"/>
+
+<!--Students-->
+    <menuitem id="menu_student_root"
+            name="Students"
+            parent="menu_etude_root"
+            action="action_etude_student"
+            sequence="10"/>
+    
+<!--Groups-->
+    <menuitem id="menu_group_root"
+            name="Groups"
+            parent="menu_etude_root"
+            action="action_etude_group"
+            sequence="20"/>
+
+<!--Sessions-->
+    <menuitem id="menu_session_root"
+            name="Sessions"
+            parent="menu_etude_root"
+            sequence="30"/>
+
+            <!--All Sessions-->
+            <menuitem id="menu_session_all"
+                    name="All Sessions"
+                    parent="menu_session_root"
+                    action="action_etude_session"
+                    sequence="10"/>
+
+            <!--Upcomin Sessions-->
+            <menuitem id="menu_session_upcoming"
+                    name="Upcoming Sessions"
+                    parent="menu_session_root"
+                    action="action_etude_session_upcoming"
+                    sequence="20"/>
+
+            <!--Upcomin Sessions-->
+            <menuitem id="menu_session_completed"
+                    name="Completed Sessions"
+                    parent="menu_session_root"
+                    action="action_etude_session_completed"
+                    sequence="30"/>
+
+<!--Enrollments-->
+    <menuitem id="menu_enrollment_root"
+            name="Enrollments"
+            parent="menu_etude_root"
+            sequence="40"/>
+
+            <!--All Enrollments-->
+            <menuitem id="menu_enrollment_all"
+                name="All Enrollments"
+                parent="menu_enrollment_root"
+                action="action_etude_enrollment"
+                sequence="10"/>
+        
+           <!--Active Enrollments-->
+           <menuitem id="menu_enrollment_active"
+                name="Active Enrollments"
+                parent="menu_enrollment_root"
+                action="action_etude_enrollment_active"
+                sequence="20"/>
+           
+           <!--Expired Enrollments-->
+           <menuitem id="menu_enrollment_expired"
+                name="Expired Enrollments"
+                parent="menu_enrollment_root"
+                action="action_etude_enrollment_expired"
+                sequence="30"/>
+
+<!--Configuration-->
+    <menuitem id="menu_configuration_root"
+            name="Configuration"
+            parent="menu_etude_root"
+            sequence="50"/>
+
+            <!--Subjects-->
+            <menuitem id="menu_subject_root"
+                    name="Subjects"
+                    parent="menu_configuration_root"
+                    action="action_etude_subject"
+                    sequence="10"/>
+
+            <!--City-->
+            <menuitem id="menu_city"
+                name="City"
+                parent="menu_configuration_root"
+                action="action_etude_city"
+                sequence="20"/>
+            
+            <!--Lycée-->
+            <menuitem id="menu_lycee"
+                name="Lycée"
+                parent="menu_configuration_root"
+                action="action_etude_lycee"
+                sequence="30"/>
+
+            <!--Level-->
+            <menuitem id="menu_level"
+                name="Level"
+                parent="menu_configuration_root"
+                action="action_etude_level"
+                sequence="40"/>
+            
+</odoo>

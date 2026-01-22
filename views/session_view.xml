@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--TREE-->
+    <record id="view_session_tree" model="ir.ui.view">
+        <field name="name">etude.session.tree</field>
+        <field name="model">etude.session</field>
+        <field name="arch" type="xml">
+            <list decoration-success = "display_status == 'ongoing'"
+                  decoration-danger = "display_status == 'completed'">
+                <field name="name"/>
+                <field name="group_id"/>
+                <field name="subject_id"/>
+                <field name="session_number"/>
+                <field name="date"/>
+                <field name="display_status" widget="badge"
+                                    decoration-info="display_status == 'upcoming'"
+                                    decoration-success="display_status == 'ongoing'"
+                                    decoration-danger="display_status == 'completed'"/>
+            </list>
+        </field>
+    </record>
+
+    <!--FORM-->
+    <record id="view_session_form" model="ir.ui.view">
+        <field name="name">etude.session.form</field>
+        <field name="model">etude.session</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button string="Refresh Attendances" type="object" name="refresh_attendance_lines"/>
+                    <field name="display_status" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="General Info">
+                            <field name="group_id"/>
+                            <field name="subject_id"/>
+                            <field name="session_number"/>
+                            <field name="display_status" widget="badge"
+                                                decoration-info="display_status == 'upcoming'"
+                                                decoration-success="display_status == 'ongoing'"
+                                                decoration-danger="display_status == 'completed'"/>
+                        </group>
+                        <group string="Date &amp; Time">
+                            <field name="date"/>
+                            <field name="start_time" readonly="0" invisible="not date"/>
+                            <field name="end_time" readonly="0" invisible="not date"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page name="attendance_lines" string="Attendances">
+                            <field name="attendance_line_ids">
+                                <list editable="top" create="0" delete="0">
+                                    <field name="student_id" readonly="1"/>
+                                    <field name="enrollment_id"/>
+                                    <field name="sessions_remaining"/>
+                                    <field name="status"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page name="notes" string="Notes">
+                            <field name="note" placeholder="You can add notes to this session here ..."/>
+                        </page>
+                        <!--<page string="Attachments">
+                            <field name="message_attachment_count" widget="statinfo"/>
+                            <field name="message_main_attachment_id" widget="download_link"/>
+                        </page>-->
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!--ACTION-->
+    <record id="action_etude_session" model="ir.actions.act_window">
+        <field name="name">Sessions</field>
+        <field name="res_model">etude.session</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new session !  
+            </p>
+        </field>
+    </record>
+
+    <!--ACTION for Upcoming Sessions-->
+    <record id="action_etude_session_upcoming" model="ir.actions.act_window">
+        <field name="name">Upcoming Sessions</field>
+        <field name="res_model">etude.session</field>
+        <field name="domain">[('stored_status','=', 'upcoming')]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new upcoming session !  
+            </p>
+        </field>
+    </record>
+
+    <!--ACTION for Completed Sessions-->
+    <record id="action_etude_session_completed" model="ir.actions.act_window">
+        <field name="name">Completed Sessions</field>
+        <field name="res_model">etude.session</field>
+        <field name="domain">[('stored_status','=', 'completed')]</field>
+        <!--<field name="context">{'from_session_completed': True}</field>-->
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new completed session !  
+            </p>
+        </field>
+    </record>
+
+</odoo>

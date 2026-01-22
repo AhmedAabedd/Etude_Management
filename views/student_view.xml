@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- TREE VIEW -->
+    <record id="view_student_tree" model="ir.ui.view">
+        <field name="name">etude.student.tree</field>
+        <field name="model">etude.student</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="phone"/>
+                <field name="level_id"/>
+                <field name="lycee_id"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- FORM VIEW -->
+    <record id="view_student_form" model="ir.ui.view">
+        <field name="name">etude.student.form</field>
+        <field name="model">etude.student</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" type="object" name="action_view_group" icon="fa-users">
+                            <field name="group_count" string="Groups" widget="statinfo"/>
+                        </button>
+                        <button class="oe_stat_button" type="object" name="action_view_enrollment" icon="fa-graduation-cap">
+                            <field name="enrollment_count" string="Enrollments" widget="statinfo"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <label for="name">Name</label>
+                            <field name="name" placeholder="e.g. Ahmed Mohsen"/>
+                        </h1>
+                    </div>
+                    <notebook>
+                        <page name="general_info" string="General Information">
+                            <group>
+                                <group>
+                                    <field name="city_id"/>
+                                    <field name="lycee_id"/>
+                                    <field name="level_id"/>
+                                </group>
+                                <group>
+                                    <field name="phone" placeholder="e.g. 55 555 555"/>
+                                    <field name="email" placeholder="e.g. example@gmail.com"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page name="notes" string="Notes">
+                            <field name="note" placeholder="You can add notes about this student here ..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!--ACTION-->
+    <record id="action_etude_student" model="ir.actions.act_window">
+        <field name="name">Students</field>
+        <field name="res_model">etude.student</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new student !  
+            </p>
+        </field>
+    </record>
+
+</odoo>
