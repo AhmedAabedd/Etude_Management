@@ -181,9 +181,15 @@ class EtudeSession(models.Model):
     
     def refresh_attendance_lines(self):
         """Instance method that works on the record(s)"""
-        attendance_lines = []
         
         for rec in self:  # Now works on self (the recordset)
+
+            for line in rec.attendance_line_ids:
+                if line.status == True:
+                    raise UserError("Cannot refresh attendance list if a student is marked present !")
+
+            attendance_lines = []
+
             for student in rec.group_id.student_ids:
                 enrollment = student.enrollment_ids.filtered(
                     lambda e: e.state == 'active' and e.group_id == rec.group_id and e.subject_id == rec.subject_id
