@@ -41,6 +41,7 @@ class EtudeEnrollment(models.Model):
                 rec.add_student_to_group()
             elif rec.sessions_remaining == 0 and rec.state == 'active':
                 rec.state = 'expired'
+                rec.remove_student_from_group()
 
     
     def action_draft(self):
@@ -69,25 +70,11 @@ class EtudeEnrollment(models.Model):
         for rec in self:
             if rec.subject_id != rec.group_id.subject_id:
                 rec.group_id = False
-
-    def create(self, vals):
-        record = super().create(vals)
-
-        if record.group_id and record.student_id:
-            for student in record.group_id.student_ids:
-                if student.id == record.student_id.id:
-                    return record
-                
-            record.group_id.write({
-                'student_ids': [(4, record.student_id.id)]
-            })
-
-        return record
     
     def add_student_to_group(self):
         for rec in self:
             if rec.group_id and rec.student_id:
-                if rec.student_id not in rec.group_id.student_ids:
+                if rec.student_id not in rec.group_id.student_ids: #Mouch lezma khater odoo ken yal9a deja fama relation mayaaml chy
                     rec.group_id.write({
                         'student_ids': [(4, rec.student_id.id)]
                     })
@@ -98,7 +85,7 @@ class EtudeEnrollment(models.Model):
             if rec.group_id and rec.student_id:
                 if rec.student_id in rec.group_id.student_ids:
                     rec.group_id.write({
-                        'student_ids': [(4, rec.student_id.id)]
+                        'student_ids': [(3, rec.student_id.id)]
                     })
                     #rec.group_id.student_ids -= rec.student_id
 

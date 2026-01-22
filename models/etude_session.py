@@ -77,7 +77,6 @@ class EtudeSession(models.Model):
                 elif now >= rec.end_time:
                     rec.display_status = 'completed'
     
-
     def _cron_update_session_status(self):
         """
         This method will be called automatically every 15 minutes
@@ -142,16 +141,6 @@ class EtudeSession(models.Model):
                             'status': False
                           }
                 ))
-                
-            #else:
-            #    attendance_lines.append((
-            #        0, 0, {
-                            #'session_id': session.id, odoo set it automatically (reversed field of the relation One2many)
-            #                'student_id': student.id,
-            #                'enrollment_id': False,
-            #                'status': False
-            #              }
-            #    ))
         
         session.attendance_line_ids = attendance_lines
         
@@ -209,30 +198,16 @@ class EtudeSession(models.Model):
                                 'status': False
                             }
                     ))
-                
-                #else:
-                #    attendance_lines.append((
-                #        0, 0, {
-                                #'session_id': session.id, odoo set it automatically (reversed field of the relation One2many)
-                #                'student_id': student.id,
-                #                'enrollment_id': False,
-                #                'status': False
-                #            }
-                #    ))
             
             # Remove ALL attendance lines
             rec.attendance_line_ids = [(5, 0, 0)]
 
             rec.attendance_line_ids = attendance_lines
         
-        
-
     @api.onchange('attendance_line_ids')
     def calculate_sessions_attended(self):
         for rec in self:
-            print("IN add_session")
             for attendance in rec.attendance_line_ids:
-                print("STATUS =", attendance.status)
                 if attendance.status == True:
                     if attendance.sessions_remaining == 0:
                         raise UserError("Enrollment expired !")
