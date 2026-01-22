@@ -1,4 +1,5 @@
 from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError
 
 
 
@@ -44,9 +45,15 @@ class EtudeEnrollment(models.Model):
     @api.depends("sessions_remaining")
     def _compute_state(self):
         for rec in self:
+            #Set state to ACTIVE
             if rec.sessions_remaining > 0 and rec.state == 'expired':
-                rec.state = 'active'
-                rec.add_student_to_group()
+                active_enrollment = rec.get_other_active_enrollment()
+                if active_enrollment:
+                    raise UserError("Student already has an active enrollment to this group !")
+                else:
+                    rec.state = 'active'
+                    rec.add_student_to_group()
+            #Set state to Expired
             elif rec.sessions_remaining == 0 and rec.state == 'active':
                 rec.state = 'expired'
                 rec.remove_student_from_group()
@@ -59,8 +66,12 @@ class EtudeEnrollment(models.Model):
 
     def action_active(self):
         for rec in self:
-            rec.state = 'active'
-            rec.add_student_to_group()
+            active_enrollment = rec.get_other_active_enrollment()
+            if active_enrollment:
+                raise UserError("Student already has an active enrollment to this group !")
+            else:
+                rec.state = 'active'
+                rec.add_student_to_group()
     
     def action_expired(self):
         for rec in self:
@@ -78,6 +89,15 @@ class EtudeEnrollment(models.Model):
         for rec in self:
             if rec.subject_id != rec.group_id.subject_id:
                 rec.group_id = False
+    
+    def get_other_active_enrollment(self):
+        self.ensure_one()
+        return self.env['etude.enrollment'].search([
+            ('student_id', '=', self.student_id.id),
+            ('group_id', '=', self.group_id.id),
+            ('state', '=', 'active'),
+            ('id', '!=', self.id)
+        ], limit=1)
     
     def add_student_to_group(self):
         for rec in self:

@@ -27,8 +27,8 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button string="Draft" type="object" name="action_draft"/>
-                    <button string="Active" type="object" name="action_active"/>
+                    <button string="Set To Draft" type="object" name="action_draft"/>
+                    <button string="Activate" type="object" name="action_active" class="btn-primary" invisible="state != 'draft'"/>
                     <button string="Expired" type="object" name="action_expired"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft, active, expired" clickable="1"/>
                 </header>
