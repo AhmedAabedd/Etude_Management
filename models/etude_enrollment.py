@@ -7,13 +7,14 @@ class EtudeEnrollment(models.Model):
 
 
 
-    name = fields.Char(strimg="Name", compute="_compute_name", store=True)
+    name = fields.Char(string="Name", compute="_compute_name", store=True)
 
     student_id = fields.Many2one('etude.student', string="student", required=True)
     subject_id = fields.Many2one('etude.subject', string="Subject", required=True)
     group_id = fields.Many2one('etude.group', string="Group", domain="[('subject_id', '=', subject_id)]", required=True)
+    monthly_fee = fields.Float(related="subject_id.monthly_fee", store=True)
 
-    start_date = fields.Date(String="Start Date")
+    start_date = fields.Date(String="Start Date", required=True)
     end_date = fields.Date(string="End Date")
     state = fields.Selection(
         [
@@ -32,6 +33,13 @@ class EtudeEnrollment(models.Model):
 
 
 
+
+    @api.depends("student_id", "group_id", "start_date")
+    def _compute_name(self):
+        for rec in self:
+            rec.name = "New Enrollment"
+            if rec.student_id and rec.group_id and rec.start_date and rec.id:
+                rec.name = f"{rec.student_id.name} / {rec.group_id.name} / {rec.id}"
 
     @api.depends("sessions_remaining")
     def _compute_state(self):
