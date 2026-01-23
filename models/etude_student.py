@@ -40,7 +40,7 @@ class EtudeStudent(models.Model):
         for rec in self:
             rec.enrollment_count = len(rec.enrollment_ids)
     
-    @api.depends("attendance_ids")
+    @api.depends("attendance_ids.status")
     def _compute_attendance_count(self):
         for rec in self:
             rec.attendance_count = len(rec.attendance_ids.filtered(lambda a: a.status == True))
