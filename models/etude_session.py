@@ -20,7 +20,7 @@ class EtudeSession(models.Model):
             ('upcoming', 'Upcoming'),
             ('ongoing', 'Ongoing'),
             ('completed', 'Completed'),
-        ], string="Display Status", default="upcoming", required=True, compute="_compute_display_status"
+        ], string="Status", default="upcoming", required=True, compute="_compute_display_status"
     )
     stored_status = fields.Selection(
         [

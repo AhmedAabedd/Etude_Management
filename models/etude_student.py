@@ -83,6 +83,10 @@ class EtudeStudent(models.Model):
             'name': 'View Attended Sessions',
             'res_model': 'etude.session',
             'view_mode': 'list,form',
+            'views': [
+                (self.env.ref('etude_management.view_session_attended_tree').id, 'list'),
+                (self.env.ref('etude_management.view_session_form').id, 'form'),
+            ],
             'target': 'current',
             'domain': [('id', 'in', session_ids)],
         }
