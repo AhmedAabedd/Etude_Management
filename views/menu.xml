@@ -40,7 +40,7 @@
                     action="action_etude_session_upcoming"
                     sequence="20"/>
 
-            <!--Upcomin Sessions-->
+            <!--Completed Sessions-->
             <menuitem id="menu_session_completed"
                     name="Completed Sessions"
                     parent="menu_session_root"

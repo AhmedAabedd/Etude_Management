@@ -30,6 +30,9 @@ class EtudeEnrollment(models.Model):
 
     note = fields.Text(string="Notes")
 
+    attendance_ids = fields.One2many('etude.attendance', 'enrollment_id')
+    attendance_count = fields.Integer(string="Attendances", compute="_compute_attendance_count", store=True)
+
     payment_id = fields.Many2one('etude.payment')
 
 
@@ -102,7 +105,14 @@ class EtudeEnrollment(models.Model):
     def _compute_sessions_remaining(self):
         for rec in self:
             rec.sessions_remaining = rec.sessions_number - rec.sessions_attended
+            if rec.sessions_remaining < 0:
+                rec.sessions_remaining = 0
             rec.sessions_attended = rec.sessions_number - rec.sessions_remaining
+
+    @api.depends("attendance_ids")
+    def _compute_attendance_count(self):
+        for rec in self:
+            rec.attendance_count = len(rec.attendance_ids)
 
     @api.onchange('subject_id')
     def reset_group_id(self):
@@ -140,6 +150,16 @@ class EtudeEnrollment(models.Model):
                         })
                     #rec.group_id.student_ids -= rec.student_id
 
+    def action_view_attendance(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'View Attendances',
+            'res_model': 'etude.attendance',
+            'view_mode': 'list,form',
+            'target': 'current', #to open in new view
+            'domain': [('enrollment_id', '=', self.id)]
+        }
     
     
     
