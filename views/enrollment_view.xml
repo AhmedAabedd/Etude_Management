@@ -30,12 +30,16 @@
                     <button string="Set To Draft" type="object" name="action_draft" invisible="state == 'draft'"/>
                     <button string="Activate" type="object" name="action_active" class="btn-primary" invisible="state != 'draft'"/>
                     <button string="Set To Expired" type="object" name="action_expired" invisible="state != 'active'"/>
+                    <button string="pay" type="object" name="open_create_payment" class="btn-success" invisible="payment_status == 'paid'"/>_compute_payment_count
                     <field name="state" widget="statusbar" statusbar_visible="draft, active, expired" clickable="1"/>
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
                         <button class="oe_stat_button" type="object" name="action_view_attendance" icon="fa-check">
                             <field name="sessions_attended" string="Attendances" widget="statinfo"/>
+                        </button>
+                        <button class="oe_stat_button" type="object" name="action_view_payment" icon="fa-file-text-o">
+                            <field name="payment_count" string="Payments" widget="statinfo"/>
                         </button>
                     </div>
                     <div class="oe_title">
@@ -56,6 +60,14 @@
                                     <field name="sessions_number"/>
                                     <field name="sessions_remaining"/>
                                 </group>
+                            </group>
+                        </page>
+                        <page name="payment_info" string="Payment Infos">
+                            <group>
+                                <field name="total_amount"/>
+                                <field name="payment_status" widget="badge"
+                                                             decoration-success="payment_status == 'paid'"
+                                                             decoration-danger="payment_status == 'unpaid'"/>
                             </group>
                         </page>
                         <page name="notes" string="Notes">

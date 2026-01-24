@@ -23,6 +23,7 @@
         'views/session_view.xml',
         'views/enrollment_view.xml',
         'views/attendance_view.xml',
+        'views/payment_view.xml',
         'views/menu.xml',
         'data/cron_data.xml',
     ],

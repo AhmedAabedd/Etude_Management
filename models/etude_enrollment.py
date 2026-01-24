@@ -33,7 +33,7 @@ class EtudeEnrollment(models.Model):
     attendance_ids = fields.One2many('etude.attendance', 'enrollment_id')
 
 
-    total_amount = fields.Float(string="Total", required=True)
+    total_amount = fields.Float(string="Total")
     payment_status = fields.Selection(
         [
             ('paid', 'Paid'),
@@ -41,6 +41,7 @@ class EtudeEnrollment(models.Model):
         ], string="Payment Status", default="unpaid", required=True
     )
     payment_ids = fields.Many2one('etude.payment', 'enrollment_id')
+    payment_count = fields.Integer(string="Payments Count", compute="_compute_payment_count")
 
 
 
@@ -168,6 +169,42 @@ class EtudeEnrollment(models.Model):
             }
         }
     
+    #@api.depends("payment_ids")
+    def _compute_payment_count(self):
+        for rec in self:
+            #rec.payment_count = len(rec.payment_ids)
+            rec.payment_count = self.env['etude.payment'].search_count([('enrollment_id', '=', rec.id)])
+    
+    def action_view_payment(self):
+        self.ensure_one()
+        self._compute_payment_count()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'View Payments',
+            'res_model': 'etude.payment',
+            'view_mode': 'list,form',
+            'target': 'current', #to open in new view
+            'domain': [('enrollment_id', '=', self.id)]
+        }
+    
+    def open_create_payment(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Create Payment',
+            'res_model': 'etude.payment',
+            'view_mode': 'form',
+            'target': 'new',   # opens in modal
+            'context': {
+                'default_enrollment_id': self.id,
+                'default_student_id': self.student_id.id,
+                'default_total_amount': self.total_amount,
+                'default_payment_date': fields.Datetime.now()
+            },
+        }
+    
+    
+
     
     
     
