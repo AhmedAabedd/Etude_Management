@@ -145,39 +145,6 @@ class EtudeSession(models.Model):
         session.attendance_line_ids = attendance_lines
         
         return session
-
-    #@api.model
-    #def generate_attendance_lines(self, session):
-            #"""Class method - can be called on model or record"""
-
-            #attendance_lines = []
-
-            #for student in session.group_id.student_ids:
-            #    enrollment = student.enrollment_ids.filtered(
-            #        lambda e: e.state == 'active' and e.group_id == session.group_id and e.subject_id == session.subject_id
-            #    )
-
-            #    if enrollment:
-            #        attendance_lines.append((
-            #            0, 0, {
-                                #'session_id': session.id, odoo set it automatically (reversed field of the relation One2many)
-            #                    'student_id': student.id,
-            #                    'enrollment_id': enrollment[0].id,
-            #                    'status': False
-            #                }
-            #        ))
-                
-            #    else:
-            #        attendance_lines.append((
-            #            0, 0, {
-                                #'session_id': session.id, odoo set it automatically (reversed field of the relation One2many)
-            #                    'student_id': student.id,
-            #                    'enrollment_id': False,
-            #                    'status': False
-            #                }
-            #        ))
-
-            #return attendance_lines
     
     def refresh_attendance_lines(self):
         """Instance method that works on the record(s)"""
@@ -210,15 +177,3 @@ class EtudeSession(models.Model):
 
             rec.attendance_line_ids = attendance_lines
         
-    @api.onchange('attendance_line_ids')
-    def calculate_sessions_attended(self):
-        for rec in self:
-            for attendance in rec.attendance_line_ids:
-                if attendance.status == True:
-                    if attendance.sessions_remaining == 0:
-                        raise UserError("Enrollment expired !")
-                    else:
-                        attendance.enrollment_id.sessions_attended += 1
-                else:
-                    attendance.enrollment_id.sessions_attended -= 1
-

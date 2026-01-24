@@ -25,15 +25,22 @@ class EtudeEnrollment(models.Model):
         ],string='Status', default='draft', required=True, tracking=True, compute="_compute_state", store=True
     )
     sessions_number = fields.Integer(string="Number of Sessions", required=True, default=4)
-    sessions_attended = fields.Integer(string="Attended Sessions")
+    sessions_attended = fields.Integer(string="Attended Sessions", compute="_compute_sessions_attended", store=True)
     sessions_remaining = fields.Integer(string="Remaining Sessions", compute="_compute_sessions_remaining", store=True)
 
     note = fields.Text(string="Notes")
 
     attendance_ids = fields.One2many('etude.attendance', 'enrollment_id')
-    attendance_count = fields.Integer(string="Attendances", compute="_compute_attendance_count", store=True)
 
-    payment_id = fields.Many2one('etude.payment')
+
+    total_amount = fields.Float(string="Total", required=True)
+    payment_status = fields.Selection(
+        [
+            ('paid', 'Paid'),
+            ('unpaid', 'Unpaid')
+        ], string="Payment Status", default="unpaid", required=True
+    )
+    payment_ids = fields.Many2one('etude.payment', 'enrollment_id')
 
 
 
@@ -100,19 +107,16 @@ class EtudeEnrollment(models.Model):
             if rec.state == 'active':
                 rec.remove_student_from_group()
             rec.state = 'expired'
+    
+    @api.depends("attendance_ids", "attendance_ids.status")
+    def _compute_sessions_attended(self):
+        for rec in self:
+            rec.sessions_attended = len(rec.attendance_ids.filtered(lambda a: a.status == True))
 
     @api.depends("sessions_attended", "sessions_number")
     def _compute_sessions_remaining(self):
         for rec in self:
             rec.sessions_remaining = rec.sessions_number - rec.sessions_attended
-            if rec.sessions_remaining < 0:
-                rec.sessions_remaining = 0
-            rec.sessions_attended = rec.sessions_number - rec.sessions_remaining
-
-    @api.depends("attendance_ids")
-    def _compute_attendance_count(self):
-        for rec in self:
-            rec.attendance_count = len(rec.attendance_ids)
 
     @api.onchange('subject_id')
     def reset_group_id(self):
@@ -158,7 +162,10 @@ class EtudeEnrollment(models.Model):
             'res_model': 'etude.attendance',
             'view_mode': 'list,form',
             'target': 'current', #to open in new view
-            'domain': [('enrollment_id', '=', self.id)]
+            'domain': [('enrollment_id', '=', self.id)],
+            'context': {
+                'search_default_filter_present': 1,  # This activates the filter
+            }
         }
     
     

@@ -35,7 +35,7 @@
                 <sheet>
                     <div class="oe_button_box" name="button_box">
                         <button class="oe_stat_button" type="object" name="action_view_attendance" icon="fa-check">
-                            <field name="attendance_count" string="Attendances" widget="statinfo"/>
+                            <field name="sessions_attended" string="Attendances" widget="statinfo"/>
                         </button>
                     </div>
                     <div class="oe_title">
@@ -54,7 +54,6 @@
                                 </group>
                                 <group string="Sessions">
                                     <field name="sessions_number"/>
-                                    <field name="sessions_attended"/>
                                     <field name="sessions_remaining"/>
                                 </group>
                             </group>

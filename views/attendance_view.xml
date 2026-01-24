@@ -8,10 +8,23 @@
         <field name="arch" type="xml">
             <list>
                 <field name="student_id"/>
+                <field name="subject_id"/>
                 <field name="session_id"/>
                 <field name="sessions_remaining"/>
                 <field name="status"/>
             </list>
+        </field>
+    </record>
+
+    <!--SEARCH VIEW-->
+    <record id="view_attendance_search" model="ir.ui.view">
+        <field name="name">etude.attendance.search</field>
+        <field name="model">etude.attendance</field>
+        <field name="arch" type="xml">
+            <search>
+                <!-- Filters go here -->
+                <filter name="filter_present" string="Present" domain="[('status','=',True)]"/>
+            </search>
         </field>
     </record>
 
@@ -42,6 +55,8 @@
     <record id="action_etude_attendance" model="ir.actions.act_window">
         <field name="name">Attendances</field>
         <field name="res_model">etude.attendance</field>
+        <!-- Specify search view -->
+        <field name="search_view_id" ref="view_attendance_search"/>
     </record>
 
 </odoo>
