@@ -34,14 +34,16 @@ class EtudeEnrollment(models.Model):
 
 
     total_amount = fields.Float(string="Total")
+    unpaid_amount = fields.Float(string="Unpaid", compute="_compute_unpaid_amount", store=True)
     payment_status = fields.Selection(
         [
             ('paid', 'Paid'),
-            ('unpaid', 'Unpaid')
+            ('unpaid', 'Unpaid'),
+            ('partial', 'Partial'),
         ], string="Payment Status", default="unpaid", required=True
     )
-    payment_ids = fields.Many2one('etude.payment', 'enrollment_id')
-    payment_count = fields.Integer(string="Payments Count", compute="_compute_payment_count")
+    payment_ids = fields.One2many('etude.payment', 'enrollment_id')
+    payment_count = fields.Integer(string="Payments Count", compute="_compute_payment_count", store=True)
 
 
 
@@ -169,15 +171,18 @@ class EtudeEnrollment(models.Model):
             }
         }
     
-    #@api.depends("payment_ids")
+    @api.depends("total_amount")
+    def _compute_unpaid_amount(self):
+        for rec in self:
+            rec.unpaid_amount = rec.total_amount
+
+    @api.depends("payment_ids")
     def _compute_payment_count(self):
         for rec in self:
-            #rec.payment_count = len(rec.payment_ids)
-            rec.payment_count = self.env['etude.payment'].search_count([('enrollment_id', '=', rec.id)])
+            rec.payment_count = len(rec.payment_ids)
     
     def action_view_payment(self):
         self.ensure_one()
-        self._compute_payment_count()
         return {
             'type': 'ir.actions.act_window',
             'name': 'View Payments',
@@ -198,7 +203,7 @@ class EtudeEnrollment(models.Model):
             'context': {
                 'default_enrollment_id': self.id,
                 'default_student_id': self.student_id.id,
-                'default_total_amount': self.total_amount,
+                'default_total_amount': self.unpaid_amount,
                 'default_payment_date': fields.Datetime.now()
             },
         }

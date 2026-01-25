@@ -1,4 +1,5 @@
 from odoo import models, fields, api, _
+from odoo.exceptions import UserError, ValidationError, RedirectWarning
 
 
 
@@ -10,6 +11,7 @@ class EtudePayment(models.Model):
     enrollment_id = fields.Many2one('etude.enrollment', string="Enrollment")
     student_id = fields.Many2one('etude.student', string="Student")
     total_amount = fields.Float(string="Total")
+    paid_amount = fields.Float(string="Paid Amount")
     payment_date = fields.Date(string="Payment Date")
 
 
@@ -24,9 +26,18 @@ class EtudePayment(models.Model):
     def create(self, vals):
         record = super().create(vals)
 
-        record.enrollment_id.write({
-            'payment_status': 'paid',
-            #'payment_ids': (4, record.id)
-        })
+        if record.paid_amount == record.total_amount:
+            record.enrollment_id.write({
+                'payment_status': 'paid',
+                'unpaid_amount': 0.0
+            })
+        elif record.paid_amount < record.total_amount:
+            unpaid_amount = record.total_amount - record.paid_amount
+            record.enrollment_id.write({
+                'payment_status': 'partial',
+                'unpaid_amount': unpaid_amount
+            })
+        else:
+            raise UserError(f"Paid Amount cannot exceed Total Amount ({record.total_amount})")
 
         return record
