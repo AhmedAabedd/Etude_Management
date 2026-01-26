@@ -32,6 +32,9 @@
                         <button class="oe_stat_button" type="object" name="action_view_session" icon="fa-calendar-check-o">
                             <field name="attendance_count" string="Attended Sessions" widget="statinfo"/>
                         </button>
+                        <button class="oe_stat_button" type="object" name="action_view_payment" icon="fa-file-text-o">
+                            <field name="payment_count" string="Payments" widget="statinfo"/>
+                        </button>
                     </div>
                     <div class="oe_title">
                         <h1>

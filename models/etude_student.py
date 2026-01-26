@@ -29,6 +29,9 @@ class EtudeStudent(models.Model):
     attendance_ids = fields.One2many('etude.attendance', 'student_id')
     attendance_count = fields.Integer(string="Attendances Count", compute="_compute_attendance_count", store=True)
 
+    payment_ids = fields.One2many('etude.payment', 'student_id')
+    payment_count = fields.Integer(string="Students Count", compute="_compute_payment_count", store=True)
+
 
     @api.depends("group_ids")
     def _compute_group_count(self):
@@ -44,6 +47,11 @@ class EtudeStudent(models.Model):
     def _compute_attendance_count(self):
         for rec in self:
             rec.attendance_count = len(rec.attendance_ids.filtered(lambda a: a.status == True))
+    
+    @api.depends("payment_ids")
+    def _compute_payment_count(self):
+        for rec in self:
+            rec.payment_count = len(rec.payment_ids)
     
     def action_view_group(self):
         self.ensure_one()
@@ -90,5 +98,18 @@ class EtudeStudent(models.Model):
             'target': 'current',
             'domain': [('id', 'in', session_ids)],
         }
-
+    
+    def action_view_payment(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'View Payments',
+            'res_model': 'etude.payment',
+            'view_mode': 'list,form',
+            'target': 'current',
+            'domain': [('student_id', '=', self.id)],
+            'context': {
+                'group_by': ['enrollment_id'],
+            }
+        }
 
