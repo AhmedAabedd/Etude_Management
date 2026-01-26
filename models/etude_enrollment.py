@@ -40,7 +40,7 @@ class EtudeEnrollment(models.Model):
             ('paid', 'Paid'),
             ('unpaid', 'Unpaid'),
             ('partial', 'Partial'),
-        ], string="Payment Status", default="unpaid", required=True
+        ], string="Payment Status", default="unpaid", required=True, compute="_compute_payment_status", store=True
     )
     payment_ids = fields.One2many('etude.payment', 'enrollment_id')
     payment_count = fields.Integer(string="Payments Count", compute="_compute_payment_count", store=True)
@@ -170,16 +170,28 @@ class EtudeEnrollment(models.Model):
                 'search_default_filter_present': 1,  # This activates the filter
             }
         }
-    
-    @api.depends("total_amount")
-    def _compute_unpaid_amount(self):
-        for rec in self:
-            rec.unpaid_amount = rec.total_amount
 
     @api.depends("payment_ids")
     def _compute_payment_count(self):
         for rec in self:
             rec.payment_count = len(rec.payment_ids)
+
+    @api.depends("payment_ids")
+    def _compute_payment_status(self):
+        for rec in self:
+            paid_amount_sum = sum(rec.payment_ids.mapped('paid_amount'))
+            if paid_amount_sum == 0:
+                rec.payment_status = 'unpaid'
+            elif paid_amount_sum < rec.total_amount:
+                rec.payment_status = 'partial'
+            elif paid_amount_sum == rec.total_amount:
+                rec.payment_status = 'paid'
+    
+    @api.depends("total_amount", "payment_ids")
+    def _compute_unpaid_amount(self):
+        for rec in self:
+            paid_amount_sum = sum(rec.payment_ids.mapped('paid_amount'))
+            rec.unpaid_amount = rec.total_amount - paid_amount_sum
     
     def action_view_payment(self):
         self.ensure_one()

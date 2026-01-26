@@ -23,7 +23,13 @@ class EtudePayment(models.Model):
                 date_str = fields.Datetime.to_string(rec.payment_date)[:10]
                 rec.name = f"{rec.student_id.name} / {rec.enrollment_id.subject_id.name} / {date_str} / Payment {rec.id}"
 
-    def create(self, vals):
+    @api.constrains("paid_amount")
+    def check_paid_amount(self):
+        for rec in self:
+            if rec.paid_amount > rec.total_amount:
+                raise UserError(f"Paid Amount cannot exceed Total Amount ({rec.total_amount})")
+
+    """def create(self, vals):
         record = super().create(vals)
 
         if record.paid_amount == record.total_amount:
@@ -40,4 +46,4 @@ class EtudePayment(models.Model):
         else:
             raise UserError(f"Paid Amount cannot exceed Total Amount ({record.total_amount})")
 
-        return record
+        return record"""

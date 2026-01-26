@@ -30,7 +30,7 @@
                     <button string="Set To Draft" type="object" name="action_draft" invisible="state == 'draft'"/>
                     <button string="Activate" type="object" name="action_active" class="btn-primary" invisible="state != 'draft'"/>
                     <button string="Set To Expired" type="object" name="action_expired" invisible="state != 'active'"/>
-                    <button string="pay" type="object" name="open_create_payment" class="btn-success" invisible="payment_status == 'paid'"/>
+                    <button string="Pay" type="object" name="open_create_payment" class="btn-success" invisible="payment_status == 'paid'"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft, active, expired"/>
                 </header>
                 <sheet>

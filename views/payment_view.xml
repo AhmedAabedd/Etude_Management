@@ -6,11 +6,11 @@
         <field name="name">etude.payment.tree</field>
         <field name="model">etude.payment</field>
         <field name="arch" type="xml">
-            <list>
+            <list create="0">
                 <field name="name"/>
                 <field name="enrollment_id"/>
                 <field name="student_id"/>
-                <field name="total_amount"/>
+                <field name="paid_amount"/>
                 <field name="payment_date"/>
             </list>
         </field>
