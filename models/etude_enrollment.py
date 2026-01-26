@@ -176,7 +176,7 @@ class EtudeEnrollment(models.Model):
         for rec in self:
             rec.payment_count = len(rec.payment_ids)
 
-    @api.depends("payment_ids")
+    @api.depends("payment_ids", "payment_ids.paid_amount")
     def _compute_payment_status(self):
         for rec in self:
             paid_amount_sum = sum(rec.payment_ids.mapped('paid_amount'))
@@ -187,7 +187,7 @@ class EtudeEnrollment(models.Model):
             elif paid_amount_sum == rec.total_amount:
                 rec.payment_status = 'paid'
     
-    @api.depends("total_amount", "payment_ids")
+    @api.depends("total_amount", "payment_ids", "payment_ids.paid_amount")
     def _compute_unpaid_amount(self):
         for rec in self:
             paid_amount_sum = sum(rec.payment_ids.mapped('paid_amount'))
